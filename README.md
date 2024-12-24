@@ -15,6 +15,20 @@ This project is a C++ implementation of a simulation for the popular board game 
 
 ---
 
+## Technologies and Methods Used
+
+- **Smart Pointers**: Utilized for efficient memory management and to avoid manual deallocation of dynamically allocated objects.
+- **Object-Oriented Programming (OOP)**: Implemented principles such as encapsulation, inheritance, and polymorphism for modular and reusable design.
+- **SFML (Simple and Fast Multimedia Library)**: Used for graphical visualization of the game board and its elements.
+- **C++ Standard Library**: Includes containers like `std::vector`, `std::map`, and algorithms for efficient data management.
+- **Doctest Framework**: Applied for comprehensive unit testing of the codebase.
+- **Randomization**: Used `std::rand` for drawing random development cards and simulating dice rolls.
+- **Exception Handling**: Ensures robustness with proper error handling and informative messages during gameplay.
+- **Makefile**: Facilitates building and managing the project dependencies.
+
+---
+
+
 ## Classes Overview
 
 ### Game Elements

@@ -1,0 +1,52 @@
+CXX = g++
+CXXFLAGS = -Wall -g -Wno-builtin-declaration-mismatch -MMD -MP
+
+# SFML Libraries
+SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+
+.PHONY: all clean catan test valgrind tidy
+
+# Main source files and objects
+OBJECTS = GameBoard.o GameOperator.o Node.o Terrain.o Player.o Property.o ResourceCard.o DevelopmentCard.o BoardVisualizer.o
+SOURCES = GameBoard.cpp GameOperator.cpp Node.cpp Terrain.cpp Player.cpp Property.cpp ResourceCard.cpp DevelopmentCard.cpp BoardVisualizer.cpp
+
+# Test source files and objects
+TEST_SOURCES = TestCounter.cpp Test.cpp
+TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
+
+# Dependency files
+DEPS = $(OBJECTS:.o=.d) $(TEST_OBJECTS:.o=.d)
+
+# Build all: demo and test
+all: demo test
+
+# Build the main demo executable with SFML
+demo: $(OBJECTS) demo.o
+	$(CXX) $(CXXFLAGS) $^ -o demo $(SFML_LIBS)
+
+# Build the test executable with SFML (if tests require SFML)
+test: $(OBJECTS) $(TEST_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o test $(SFML_LIBS)
+
+# Run the demo
+catan: demo
+	./demo
+
+# Run Valgrind to check for memory leaks
+valgrind: demo
+	valgrind --leak-check=full --track-origins=yes --log-file=valgrind-report.txt ./demo
+
+# Tidy up code using clang-tidy
+tidy:
+	clang-tidy $(SOURCES) $(TEST_SOURCES) demo.cpp -checks=bugprone-*,g++-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=-* --
+
+# Generic rule for building object files from cpp files
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Include dependency files
+-include $(DEPS)
+
+# Clean up generated files
+clean:
+	rm -f *.o *.d demo test valgrind-report.txt
